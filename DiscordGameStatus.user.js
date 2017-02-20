@@ -4,7 +4,7 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.0.0
+// @version     1.0.1
 // @grant       GM_unsafeWindow
 // @run-at      document-start
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
@@ -66,7 +66,7 @@
     function interval_WS ()
     {
         if (unsafeWindow._ws) {
-            console.log("eh", unsafeWindow, unsafeWindow._ws);
+            console.log("[DiscordGameStatus] Found WebSocket object", unsafeWindow._ws);
             unsafeWindow._ws_ = unsafeWindow._ws;
             clearInterval(interval_WS_id);
         }
