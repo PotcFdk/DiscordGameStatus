@@ -4,7 +4,7 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.0.1
+// @version     1.0.2
 // @grant       GM_unsafeWindow
 // @run-at      document-start
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
@@ -77,22 +77,26 @@
     var interval_UI_id = null;
     function interval_UI ()
     {
-        var buttons = document.getElementsByClassName("btn-group");
-        if (buttons && buttons.length > 0)
-        {
-            buttons = buttons[0];
-            var button = buttons.children[2].cloneNode(true);
-            buttons.appendChild(button);
-            button.addEventListener("click", gameUI, false);
-            button.addEventListener("mouseover", tooltipUIon, false);
-            button.addEventListener("mouseout", tooltipUIoff, false);
-            button.className = "btn";
-            button.style.backgroundImage = "url('" + button_icon + "')";
-            button.style.backgroundSize = "70%";
-            button.style.backgroundRepeat = "no-repeat";
-            button.style.backgroundPosition = "center";
-            clearInterval(interval_UI_id);
-        }
+		var div_accounts = document.getElementsByClassName("account");
+		if (div_accounts && div_accounts.length > 0)
+		{
+			var buttons = div_accounts[0].getElementsByClassName("btn-group");
+			if (buttons && buttons.length > 0)
+			{
+				buttons = buttons[0];
+				var button = buttons.children[2].cloneNode(true);
+				buttons.appendChild(button);
+				button.addEventListener("click", gameUI, false);
+				button.addEventListener("mouseover", tooltipUIon, false);
+				button.addEventListener("mouseout", tooltipUIoff, false);
+				button.className = "btn";
+				button.style.backgroundImage = "url('" + button_icon + "')";
+				button.style.backgroundSize = "70%";
+				button.style.backgroundRepeat = "no-repeat";
+				button.style.backgroundPosition = "center";
+				clearInterval(interval_UI_id);
+			}
+		}
     }
     interval_UI_id = setInterval(interval_UI, 1);
 })();
