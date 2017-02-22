@@ -4,7 +4,7 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.1.0
+// @version     1.1.1
 // @grant       GM_unsafeWindow
 // @run-at      document-start
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
@@ -83,6 +83,8 @@
 			var buttons = div_accounts[0].getElementsByClassName("btn-group");
 			if (buttons && buttons.length > 0)
 			{
+				clearInterval(interval_UI_id);
+				
 				buttons = buttons[0];
 				var button = buttons.children[2].cloneNode(true);
 				buttons.appendChild(button);
@@ -97,10 +99,8 @@
 
 				var style = document.createElement("style");
 				var sheet = document.head.appendChild(style).sheet;
-				sheet.insertRule(".btn-gamestatus:hover:after {opacity: 1;}");
-				sheet.insertRule(".btn-gamestatus:after {opacity: 0.4; background-size: 70%; background-repeat: no-repeat; background-position: center; background-image: url('" + button_icon + "')}", sheet.cssRules.length);
-
-				clearInterval(interval_UI_id);
+				sheet.insertRule(".btn-gamestatus:hover:after {opacity: 1;}", sheet.cssRules.length);
+				sheet.insertRule(".account .btn-gamestatus:after {opacity: 0.4; background-size: 18px auto; background-repeat: no-repeat; background-position: center; background-image: url('" + button_icon + "')}", sheet.cssRules.length);
 			}
 		}
 	}
