@@ -48,15 +48,14 @@
 	{
 		var t = document.getElementsByClassName("tooltips");
 		if (t == null || t.length < 1) return;
-		var left = 0, top = 0;
+		var left = 0;
 		var obj = ev.currentTarget;
 		if (obj)
 		{
 			var rect = obj.getBoundingClientRect();
-			top  = rect.top - rect.height * 2/3;
 			left = rect.left - game_name.length * 1.5 - rect.width * 1.1;
 		}
-		t[0].innerHTML = onoff ? '<div class="tooltip tooltip-top tooltip-normal" style="left:' + left + 'px; top:' + top + 'px;">' + (game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>' : '';
+		t[0].innerHTML = onoff ? '<div class="tooltip tooltip-top tooltip-normal" style="left:' + left + 'px; bottom:59px;">' + (game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>' : '';
 	}
 
 	function tooltipUIon  (ev) { return tooltipUI (ev, true);  }
