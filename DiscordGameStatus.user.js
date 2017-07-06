@@ -4,7 +4,7 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.2.0
+// @version     1.3.0
 // @grant       GM_unsafeWindow
 // @run-at      document-start
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
@@ -47,15 +47,19 @@
 	function tooltipUI (ev, onoff)
 	{
 		var t = document.getElementsByClassName("tooltips");
-		if (t == null || t.length < 1) return;
-		var left = 0;
-		var obj = ev.currentTarget;
-		if (obj)
-		{
-			var rect = obj.getBoundingClientRect();
-			left = rect.left - game_name.length * 1.5 - rect.width * 1.1;
+		if (onoff) {
+			if (t == null) return;
+			var left = 0;
+			var obj = ev.currentTarget;
+			if (obj)
+			{
+				var rect = obj.getBoundingClientRect();
+				left = rect.left - (game_name ? game_name.length * 1.5 : 0) - rect.width * 1.1;
+			}
+			t[0].innerHTML = '<div class="tooltip tooltip-top tooltip-normal" style="left:' + left + 'px; top:544px;">' + (game_name && game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>';
+		} else {
+			t[0].innerHTML = '';
 		}
-		t[0].innerHTML = onoff ? '<div class="tooltip tooltip-top tooltip-normal" style="left:' + left + 'px; bottom:59px;">' + (game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>' : '';
 	}
 
 	function tooltipUIon  (ev) { return tooltipUI (ev, true);  }
@@ -77,30 +81,29 @@
 	var interval_UI_id = null;
 	function interval_UI ()
 	{
-		var div_accounts = document.getElementsByClassName("account");
-		if (div_accounts && div_accounts.length > 0)
+		var channels_wrap = document.getElementsByClassName("channels-wrap");
+		if (channels_wrap && channels_wrap.length > 0)
 		{
-			var buttons = div_accounts[0].getElementsByClassName("btn-group");
+			var buttons = channels_wrap[0].getElementsByTagName("button");
 			if (buttons && buttons.length > 0)
 			{
 				clearInterval(interval_UI_id);
 				
-				buttons = buttons[0];
-				var button = buttons.children[2].cloneNode(true);
+				buttons = buttons[0].parentNode.parentNode;
+				var button = buttons.children[1].cloneNode(true);
 				buttons.appendChild(button);
 				button.addEventListener("click", gameUI, false);
 				button.addEventListener("mouseover", tooltipUIon, false);
 				button.addEventListener("mouseout", tooltipUIoff, false);
-				button.className = "btn btn-gamestatus";
-				button.style.boxShadow = "inset 1px 0 0 #393c41";
 
-				buttons.children[2].style.borderRight = "1px solid #1c1e22";
-				buttons.children[2].style.borderRadius = "0";
+				var button_button = button.children[0];
+				button_button.className += " btn-gamestatus";
+				button_button.style = "";
 
 				var style = document.createElement("style");
 				var sheet = document.head.appendChild(style).sheet;
-				sheet.insertRule(".btn-gamestatus:hover:after {opacity: 1;}", sheet.cssRules.length);
-				sheet.insertRule(".account .btn-gamestatus:after {opacity: 0.4; background-size: 18px auto; background-repeat: no-repeat; background-position: center; background-image: url('" + button_icon + "')}", sheet.cssRules.length);
+				sheet.insertRule(".btn-gamestatus:hover {-webkit-filter: brightness(165%);}", sheet.cssRules.length);
+				sheet.insertRule(".btn-gamestatus {opacity: 1; -webkit-filter: brightness(115%); background-size: 18px auto; background-repeat: no-repeat; background-position: center; background-image: url('" + button_icon + "')}", sheet.cssRules.length);
 			}
 		}
 	}
