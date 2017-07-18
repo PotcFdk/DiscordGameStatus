@@ -4,7 +4,7 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.3.0
+// @version     1.3.1
 // @grant       GM_unsafeWindow
 // @run-at      document-start
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
@@ -56,7 +56,7 @@
 				var rect = obj.getBoundingClientRect();
 				left = rect.left - (game_name ? game_name.length * 1.5 : 0) - rect.width * 1.1;
 			}
-			t[0].innerHTML = '<div class="tooltip tooltip-top tooltip-normal" style="left:' + left + 'px; top:544px;">' + (game_name && game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>';
+			t[0].innerHTML = '<div class="tooltip tooltip-top tooltip-normal" style="left:' + left + 'px; bottom:51px;">' + (game_name && game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>';
 		} else {
 			t[0].innerHTML = '';
 		}
