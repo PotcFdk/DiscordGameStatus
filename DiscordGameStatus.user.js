@@ -4,9 +4,9 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.3.1
+// @version     1.4.0
 // @grant       GM_unsafeWindow
-// @run-at      document-start
+// @run-at      document-end
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
 // @updateURL   https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.meta.js
 // ==/UserScript==
@@ -17,15 +17,24 @@
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
 	You may obtain a copy of the License at
-	
+
 	http://www.apache.org/licenses/LICENSE-2.0
-	
+
 	Unless required by applicable law or agreed to in writing, software
 	distributed under the License is distributed on an "AS IS" BASIS,
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
+
+var real_ws_send = unsafeWindow.WebSocket.prototype.send;
+unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
+	if (unsafeWindow._ws_ != this) {
+		unsafeWindow._ws_ = this;
+		console.log("[DiscordGameStatus] Grabbed Websocket object through the send() hook:", this);
+	}
+	return real_ws_send.call(this, data);
+}, unsafeWindow);
 
 (function() {
 	'use strict';
@@ -41,7 +50,7 @@
 		if (game_name === null) return;
 		var msg = {"op": 3, "d": {"idle_since": null}};
 		msg.d.game = game_name.length > 0 ? {"name": game_name} : null;
-		unsafeWindow._ws_.ws.send(JSON.stringify(msg));
+		unsafeWindow._ws_.send(JSON.stringify(msg));
 	}
 
 	function tooltipUI (ev, onoff)
@@ -65,18 +74,6 @@
 	function tooltipUIon  (ev) { return tooltipUI (ev, true);  }
 	function tooltipUIoff (ev) { return tooltipUI (ev, false); }
 
-	// wait for WS
-	var interval_WS_id = null;
-	function interval_WS ()
-	{
-		if (unsafeWindow._ws) {
-			console.log("[DiscordGameStatus] Found WebSocket object", unsafeWindow._ws);
-			unsafeWindow._ws_ = unsafeWindow._ws;
-			clearInterval(interval_WS_id);
-		}
-	}
-	interval_WS_id = setInterval(interval_WS, 1);
-
 	// wait for UI
 	var interval_UI_id = null;
 	function interval_UI ()
@@ -84,7 +81,7 @@
 		var channels_wrap = document.getElementsByClassName("channels-wrap");
 		if (channels_wrap && channels_wrap.length > 0)
 		{
-			var buttons = channels_wrap[0].getElementsByTagName("button");
+			var buttons = channels_wrap[0].childNodes[2].getElementsByTagName("button");
 			if (buttons && buttons.length > 0)
 			{
 				clearInterval(interval_UI_id);
