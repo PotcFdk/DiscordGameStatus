@@ -4,7 +4,7 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.4.0
+// @version     1.5.0
 // @grant       GM_unsafeWindow
 // @run-at      document-end
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
@@ -28,10 +28,17 @@
 */
 
 var real_ws_send = unsafeWindow.WebSocket.prototype.send;
+unsafeWindow._dgs_last_status_ = "online";
 unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 	if (unsafeWindow._ws_ != this) {
 		unsafeWindow._ws_ = this;
 		console.log("[DiscordGameStatus] Grabbed Websocket object through the send() hook:", this);
+	}
+	var data_tab = JSON.parse(data);
+	if (data_tab && data_tab.op == 3) {
+		unsafeWindow._dgs_last_status_ = data_tab.d.status;
+		data_tab.d.game = unsafeWindow._dgs_game_entry_;
+		data = JSON.stringify(data_tab);
 	}
 	return real_ws_send.call(this, data);
 }, unsafeWindow);
@@ -48,8 +55,9 @@ unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 	{
 		game_name = prompt("Game Name? (empty = remove)");
 		if (game_name === null) return;
-		var msg = {"op": 3, "d": {"idle_since": null}};
+		var msg = {"op": 3, "d": {"status": unsafeWindow._dgs_last_status_, "since": 0, "afk": false}};
 		msg.d.game = game_name.length > 0 ? {"name": game_name} : null;
+		unsafeWindow._dgs_game_entry_ = msg.d.game;
 		unsafeWindow._ws_.send(JSON.stringify(msg));
 	}
 
@@ -85,7 +93,7 @@ unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 			if (buttons && buttons.length > 0)
 			{
 				clearInterval(interval_UI_id);
-				
+
 				buttons = buttons[0].parentNode.parentNode;
 				var button = buttons.children[1].cloneNode(true);
 				buttons.appendChild(button);
