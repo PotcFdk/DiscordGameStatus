@@ -56,7 +56,7 @@ unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 		game_name = prompt("Game Name? (empty = remove)");
 		if (game_name === null) return;
 		var msg = {"op": 3, "d": {"status": unsafeWindow._dgs_last_status_, "since": 0, "afk": false}};
-		msg.d.game = game_name.length > 0 ? {"name": game_name} : null;
+		msg.d.game = game_name.length > 0 ? {"name": game_name, "type": 0} : null;
 		unsafeWindow._dgs_game_entry_ = msg.d.game;
 		unsafeWindow._ws_.send(JSON.stringify(msg));
 	}
