@@ -4,7 +4,7 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.6.0
+// @version     1.7.0
 // @grant       GM_unsafeWindow
 // @run-at      document-end
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
@@ -71,9 +71,9 @@ unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 			if (obj)
 			{
 				var rect = obj.getBoundingClientRect();
-				left = rect.left - (game_name ? game_name.length * 1.5 : 0) - rect.width * 1.1;
+				left = rect.left - (game_name ? game_name.length * 1.5 : 0) - rect.width * 1.4;
 			}
-			t[0].innerHTML = '<div class="tooltip tooltip-top tooltip-black" style="left:' + left + 'px; bottom:51px;">' + (game_name && game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>';
+			t[0].innerHTML = '<div class="tooltip tooltip-top tooltip-black" style="position:fixed; left:' + left + 'px; bottom:51px;">' + (game_name && game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>';
 		} else {
 			t[0].innerHTML = '';
 		}
@@ -86,10 +86,11 @@ unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 	var interval_UI_id = null;
 	function interval_UI ()
 	{
-		var channels_wrap = document.getElementsByClassName("channels-wrap");
+		var chat = document.getElementsByClassName("chat");
+		var channels_wrap = chat && chat[0] && chat[0].parentNode.childNodes;
 		if (channels_wrap && channels_wrap.length > 0)
 		{
-			var buttons = channels_wrap[0].childNodes[2].getElementsByTagName("button");
+			var buttons = channels_wrap[0].childNodes[1].getElementsByTagName("button");
 			if (buttons && buttons.length > 0)
 			{
 				clearInterval(interval_UI_id);
