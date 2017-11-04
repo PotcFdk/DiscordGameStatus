@@ -86,10 +86,11 @@ unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 	var interval_UI_id = null;
 	function interval_UI ()
 	{
-		var channels_wrap = document.getElementsByClassName("channels-wrap");
+		var chat = document.getElementsByClassName("chat");
+		var channels_wrap = chat && chat[0] && chat[0].parentNode.childNodes;
 		if (channels_wrap && channels_wrap.length > 0)
 		{
-			var buttons = channels_wrap[0].childNodes[2].getElementsByTagName("button");
+			var buttons = channels_wrap[0].childNodes[1].getElementsByTagName("button");
 			if (buttons && buttons.length > 0)
 			{
 				clearInterval(interval_UI_id);
