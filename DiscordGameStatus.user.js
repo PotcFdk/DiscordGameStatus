@@ -71,9 +71,9 @@ unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 			if (obj)
 			{
 				var rect = obj.getBoundingClientRect();
-				left = rect.left - (game_name ? game_name.length * 1.5 : 0) - rect.width * 1.1;
+				left = rect.left - (game_name ? game_name.length * 1.5 : 0) - rect.width * 1.4;
 			}
-			t[0].innerHTML = '<div class="tooltip tooltip-top tooltip-black" style="left:' + left + 'px; bottom:51px;">' + (game_name && game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>';
+			t[0].innerHTML = '<div class="tooltip tooltip-top tooltip-black" style="position:fixed; left:' + left + 'px; bottom:51px;">' + (game_name && game_name.length > 0 ? 'Game Status: ' + game_name : 'Set Game Status') + '</div>';
 		} else {
 			t[0].innerHTML = '';
 		}
