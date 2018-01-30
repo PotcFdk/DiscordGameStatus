@@ -4,7 +4,7 @@
 // @name        DiscordGameStatus
 // @description A userscript for setting the currently playing game in the Discord web client
 // @include     https://discordapp.com/*
-// @version     1.7.0
+// @version     1.7.1
 // @grant       GM_unsafeWindow
 // @run-at      document-end
 // @downloadURL https://raw.githubusercontent.com/PotcFdk/DiscordGameStatus/master/DiscordGameStatus.user.js
@@ -29,6 +29,10 @@
 
 var real_ws_send = unsafeWindow.WebSocket.prototype.send;
 unsafeWindow._dgs_last_status_ = "online";
+
+if (typeof exportFunction == "undefined")
+	exportFunction = func => func;
+
 unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 	if (unsafeWindow._ws_ != this) {
 		unsafeWindow._ws_ = this;
