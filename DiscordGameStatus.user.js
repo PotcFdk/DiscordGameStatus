@@ -29,6 +29,10 @@
 
 var real_ws_send = unsafeWindow.WebSocket.prototype.send;
 unsafeWindow._dgs_last_status_ = "online";
+
+if (typeof exportFunction == "undefined")
+	exportFunction = func => func;
+
 unsafeWindow.WebSocket.prototype.send = exportFunction(function(data) {
 	if (unsafeWindow._ws_ != this) {
 		unsafeWindow._ws_ = this;
